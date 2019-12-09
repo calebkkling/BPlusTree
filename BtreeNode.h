@@ -78,7 +78,7 @@ private:
 
 public:
 
-
+    //Constructor for BPTree, intilializes o to order
     Bptree(int o){
         root = nullptr;
         order = o;
@@ -88,7 +88,12 @@ public:
     ~Bptree(){ //not implemented
 
     }
-
+    /*
+         * description: Search for the value x in the tree  
+         * return: node*                                   
+         * precondition: x is a valid int                         
+         * postcondition: returns the pointer to the node where x is found or nullptr if not found                                                                    
+    */
     node* search(int x) {
         node* v = root;
         int i;
@@ -116,18 +121,39 @@ public:
 
     }
 
-
+/*
+ * description: Finds element in sorted vector when searching
+ * return: unsigned int                                         
+ * precondition: valid int vector and integer are passed in                           
+ * postcondition: returns index in the vector                   
+ *                                                        
+*/
     size_t findPos(vector<int> arr,int comp) {
         size_t i;
         for (i = 0; i < arr.size() && comp > arr[i]; i++) {}
         return i;
     }
+    
+ /*
+ * description: determines if a node has children
+ * return: bool                                           
+ * precondition: valid node pointer passed in                           
+ * postcondition: returns true if children, false if none                   
+ *                                                        
+*/
+
     bool hasChildren(node* n) {
         return n->children.size()!= 0;
     }
 
 
-
+/*
+ * description: Shifts things right during insertion   
+ * return: void                                           
+ * precondition: valid values passed in                         
+ * postcondition:                   
+ *                                                        
+*/
     void shiftRight(node* n,size_t pos){
 
         for(size_t i = n->key.size(); i > pos; i--){
@@ -137,6 +163,13 @@ public:
         }
         //adjustGraphR(n);
     }
+/*
+ * description: Shifts things right during insertion
+ * return: void                                           
+ * precondition: valid values passed in                          
+ * postcondition:             
+ *                                                        
+*/
 
     void shiftRight(vector<node*> v,size_t pos){
         for(size_t i = v.size(); i > pos; i--){
@@ -144,6 +177,13 @@ public:
             v.insert(v.begin()+i,v[i-1]);
         }
     }
+/*
+ * description: solves overflow when inserting  (when order is reached when inserting) 
+ * return: void                                           
+ * precondition: valid node pointer is passed in                           
+ * postcondition: splits the node                   
+ *                                                        
+*/
 
     void solveOverFlow(node* ptr) {
         while (ptr && ptr->key.size() >= order) {
@@ -338,8 +378,13 @@ public:
 
         }
     }
-
-
+/*
+ * description: Insert 'item' into the tree 
+ * return: bool                                          
+ * precondition: valid int passed into function                        
+ * postcondition: adds item into the tree                 
+ *                                                        
+*/
     //insert success or not
     bool insert(int item) {
 
@@ -371,6 +416,13 @@ public:
 
          solveOverFlow(last_visited);
     }
+/*
+ * description: Find the index/position of path to item to delete
+ * return: int                                           
+ * precondition: valid values passed in                            
+ * postcondition: Returns the index of path to item to delete                   
+ *                                                        
+*/
 
     int findPosDelete(vector<int> arr,int comp) {
         int i;
@@ -380,6 +432,13 @@ public:
         }
         return i;
     }
+/*
+ * description: search for the node where int x is to be deleted   
+ * return: node*                                           
+ * precondition: valid int passed in, bool isKey passed in by reference                           
+ * postcondition: isKey updated, node pointer to x found and returned or nullptr returned                   
+ *                                                        
+*/
 
     node* searchDelete(int x, bool &isKey) {
         node* v = root;
@@ -409,6 +468,13 @@ public:
         return nullptr;
 
     }
+/*
+ * description: Remove item from the tree 
+ * return: bool                                           
+ * precondition: valid int passed in                          
+ * postcondition: returns false if item not found, deletes item if found                  
+ *                                                        
+*/
 
     bool remove(int item){
 
@@ -434,6 +500,13 @@ public:
             }
         }
     }
+/*
+ * description: solves underflow when deleting  (if leaf does not have enough keys)   
+ * return: void                                           
+ * precondition:    valid values passed in                       
+ * postcondition: Merges nodes when node has too few keys                 
+ *                                                        
+*/
 
     void solveUnderFlow(node* ptr,int item){
         int min = ceil((static_cast<double>(order)/2.0))-1;
@@ -671,7 +744,13 @@ public:
     }
 
 
-
+    /*
+ * description: find the x dimension of a node to draw when updating the tree     
+ * return: int                                           
+ * precondition:                              
+ * postcondition: returns x position                    
+ *                                                        
+*/
     int xDimension(){
         queue<node *> queue1, queue2;
         int count = 0;
@@ -713,7 +792,13 @@ public:
         }
         return count;
     }
-
+/*
+ * description: Opens font txt files for digits
+ * return: void                                           
+ * precondition: valid values passed in                            
+ * postcondition: prints the corresponding digit to plotter                   
+ *                                                        
+*/
     void printDigit(SDL_Plotter &g, int a, point P, color color1, int scale) {
         ifstream input;
         int rows, cols;
@@ -772,7 +857,13 @@ public:
         input.close();
 
     }
-
+    /*
+ * description: plots the number on the plotter   
+ * return: void                                           
+ * precondition: valid values passed in                          
+ * postcondition: plotter updated to reflect changes                
+ *                                                        
+*/
     void plotNumber(const string message, int scale, point P, SDL_Plotter &g, color C) {
         size_t n=0;
         while(n<message.length()){
@@ -814,7 +905,13 @@ public:
             P.x+=(18*scale);
         }
     }
-
+/*
+ * description: draw the node to the screen
+ * return: void                                           
+ * precondition: valid values passed in                             
+ * postcondition: plotter is updated with the rectangle and number as a node                    
+ *                                                        
+*/
     void drawNode(SDL_Plotter& g, node * ptr, point P, color C){
         string arr;
         int num;
@@ -837,7 +934,13 @@ public:
     }
 
 
-
+/*
+ * description: Level order traversal to used in solveUnderflow
+ * return: void                                           
+ * precondition: valid ostream passed in                            
+ * postcondition: ostream passed in by reference is updated                    
+ *                                                        
+*/
     void levelOrder(ostream& os){
         queue<node *> queue1, queue2;
         if(!root){
